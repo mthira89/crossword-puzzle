@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Custom Crossword Puzzle</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      text-align: center;
+      padding: 20px;
+      background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-attachment: fixed;
+      margin: 0;
+      padding: 0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      color: #fff;
+    }
+    h1 {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      text-align: center;
+      text-transform: uppercase;
+      font-size: clamp(2rem, 6vw, 4rem);
+      margin: 30px auto;
+      letter-spacing: 3px;
+      padding: 20px 30px;
+      border-radius: 25px;
+      display: inline-block;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      background: linear-gradient(270deg, #ff6ec4, #7873f5, #32ff7e, #18dcff, #ff9f43);
+      background-size: 1000% 1000%;
+      animation: rainbowText 6s ease-in-out infinite;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow:
+         0 2px 4px rgba(0, 0, 0, 0.7),
+         0 4px 10px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(5px);
+      background-color: rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Rainbow gradient animation */
+    @keyframes rainbowText {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Optional shine effect */
+    h1::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -75%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(to right, rgba(255,255,255,0.4), rgba(255,255,255,0));
+      transform: skewX(-25deg);
+      animation: shine 2s infinite;
+      z-index: 0;
+    }
+
+    @keyframes shine {
+      0%   { left: -75%; }
+      100% { left: 125%; }
+    }
+
+
+    table {
+      margin: auto;
+      border-collapse: collapse;
+    }
+    td {
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      border: 1px solid #999;
+      background-color: #d0f0c0;
+      position: relative;
+    }
+    td input {
+      width: 100%;
+      height: 100%;
+      font-size: 20px;
+      text-align: center;
+      text-transform: uppercase;
+      border: none;
+      background-color: transparent;
+    }
+
+    td.empty {
+      background: linear-gradient(145deg, #e0f7fa, #80deea); /* Soft teal gradient */
+      border: none; 
+      box-shadow: 0 4px 10px rgba(0, 188, 212, 0.3); /* Soft teal shadow for depth */
+      border-radius: 8px; 
+      transition: background 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+    }
+
+    td.empty:hover {
+      background: linear-gradient(145deg, #80deea, #00bcd4); /* Darker teal gradient on hover */
+      box-shadow: 0 6px 15px rgba(0, 188, 212, 0.5); /* Glowing teal shadow */
+    }
+    
+    .button-container {
+      margin-top: 45px;
+    }
+
+    .check-button{
+      background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff6a00, #f9d423);
+      background-size: 400% 400%;
+      color: white;
+      border: none;
+      padding: 16px 32px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.4s ease-in-out;
+      box-shadow: 0 0 12px rgba(255, 0, 150, 0.5);
+      animation: pulse 2s infinite;
+      margin-right: 20px;
+      margin-top:25px ;
+      
+    }
+    .check-button:hover{
+        animation: rainbow 10s forwards, pop 1s;
+    }
+    @keyframes rainbow {
+      0% {
+        background-position: 0% 50%;
+        box-shadow: 0 0 10px #fff, 0 0 20px #ff0080, 0 0 30px #ff0080;
+      }
+      50% {
+        background-position: 100% 50%;
+        box-shadow: 0 0 20px #ff0, 0 0 30px #ff00ff, 0 0 40px #00f0ff;
+      }
+      100% {
+        background-position: 0% 50%;
+        box-shadow: 0 0 25px #0ff, 0 0 40px #0ff, 0 0 55px #0ff;
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    
+    .clear-button {
+      background: linear-gradient(45deg, #32cd32, #2ecc71, #27ae60, #a8e063);
+      background-size: 400% 400%;
+      color: white;
+      border: none;
+      padding: 16px 32px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.4s ease-in-out;
+      box-shadow: 0 0 12px rgba(50, 205, 50, 0.5);
+      animation: pulse 2s infinite;
+      margin-left: 30px;
+    }
+
+    .clear-button:hover {
+      animation: green-rainbow 10s forwards, pop 1s;
+    }
+
+    @keyframes green-rainbow {
+      0% {
+        background-position: 0% 50%;
+        box-shadow: 0 0 10px #b2fba5, 0 0 20px #76ff03, 0 0 30px #64dd17;
+    }
+    50% {
+        background-position: 100% 50%;
+        box-shadow: 0 0 20px #69f0ae, 0 0 30px #00e676, 0 0 40px #1de9b6;
+    }
+    100% {
+         background-position: 0% 50%;
+         box-shadow: 0 0 25px #00ff7f, 0 0 40px #00ff7f, 0 0 55px #00ff7f;
+    }
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+         transform: scale(1);
+    }
+    50% {
+       transform: scale(1.05);
+    }
+    }
+
+    @keyframes pop {
+       0% {
+    }
+       50% {
+         transform: scale(1.2);
+    }
+       100% {
+         transform: scale(1);
+    }
+    }
+    
+    #clues {
+      margin-top: 30px;
+      text-align: left;
+      max-width: 650px;
+      margin-left: auto;
+      margin-right: auto;
+      background: linear-gradient(135deg, #fce38a, #f38181, #a18cd1, #fcd1d1);
+      background-size: 400% 400%;
+      animation: rainbowBG 10s ease infinite;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #clues:hover {
+      transform: scale(1.03);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Animated background */
+    @keyframes rainbowBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      color: #6a0572;
+      font-size: 2em;
+      text-shadow: 1px 1px 3px #fff;
+    }
+
+    .clue-category {
+      font-weight: bold;
+      text-decoration: underline wavy #ff6b6b;
+      margin-top: 25px;
+      color: #3c40c6;
+      font-size: 1.2em;
+      background-color: #ffffff88;
+      padding: 3px 8px;
+      border-radius: 8px;
+      display: inline-block;
+    }
+
+    li {
+      margin-bottom: 10px;
+      font-size: 1.1em;
+      color: #2d3436;
+      background-color: #ffffffbb;
+      padding: 6px 12px;
+      border-radius: 10px;
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+      transition: background 0.3s ease;
+    }
+
+    li:hover {
+      background-color: #dff9fb;
+    }
+
+    .correct {
+      background: linear-gradient(135deg, #4caf50, #66bb6a); /* Smooth green gradient */
+      color: white;
+      border: 2px solid #388e3c;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-weight: bold;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 10px rgba(0, 255, 0, 0.2); /* Subtle glowing green shadow */
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .correct:hover {
+      transform: scale(1.05); /* Slight grow effect on hover */
+      box-shadow: 0 6px 15px rgba(0, 255, 0, 0.4); /* Enhanced shadow on hover */
+      background: linear-gradient(135deg, #66bb6a, #4caf50); /* Reverse gradient on hover */
+    }
+
+    .incorrect {
+      background: linear-gradient(135deg, #f44336, #e57373); /* Smooth red gradient */
+      color: white;
+      border: 2px solid #d32f2f;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-weight: bold;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 10px rgba(255, 0, 0, 0.2); /* Subtle glowing red shadow */
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .incorrect:hover {
+      transform: scale(1.05); /* Slight grow effect on hover */
+      box-shadow: 0 6px 15px rgba(255, 0, 0, 0.4); /* Enhanced shadow on hover */
+      background: linear-gradient(135deg, #e57373, #f44336); /* Reverse gradient on hover */
+    }
+
+    .user-input {
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      font-size: 1.5rem;
+      margin: 2px;
+      border-radius: 8px;
+      background-color: #ffffff;
+      border: 2px solid #ccc;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .user-input:focus {
+      outline: none;
+      background-color: #f1f8e9; /* Light greenish background on focus */
+      border-color: #4caf50; /* Green border on focus */
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.3); /* Soft green glow on focus */
+    }
+
+    .user-input:hover {
+      background-color: #f0f4c3; /* Lighter yellowish background on hover */
+      border-color: #81c784; /* Subtle green border on hover */
+    }
+
+
+
+  </style>
+</head> 
+<body>
+
+<h1>GreenLearn Puzzles</h1>
+
+<table id="crossword">
+  
+</table>
+
+<div class="button-container">
+  <button class="check-button" onclick="checkAnswers()">Check Answers</button>
+  <button class="clear-button" onclick="clearAnswers()">Clear Answers</button>
+</div>
+
+<div id="clues">
+  <h2>Clues</h2>
+  <div class="clue-category">Across</div>
+  <ul>
+    <li> Layer in the atmosphere damaged by pollution (5)</li>
+    <li> Burning these releases CO₂ (11)</li>
+    <li> Natural disaster that spews ash and gases</li>
+  </ul>
+
+  <div class="clue-category">Down</div>
+  <ul>
+    <li> Thick, dirty air common in cities (4)</li>
+    <li> Gas released by rotting trash in landfills (7)</li>
+    <li> Colorless gas from car exhaust, dangerous to breathe (6)</li>
+    <li> A major cause of air pollution from factories (9)</li>
+    <li> Chemical used in sprays that harms the ozone (3)</li>
+  </ul>
+</div>
+
+<script>
+  const answers = [
+    [null, null, null, null, null, null, "S", null, null, null, null, null, null],
+    [null, null, null, null, null, null, "M", null, "M", null, null, null, null],
+    [null, null, null, null, "O", "Z", "O", "N", "E", null, null, null, null],
+    [null, "C", null, null, null, null, "G", null, "T", null, null, null, null],
+    [null, "A", null, null, null, null, null, null, "H", null, "E", null, null],
+    [null, "R", null, null, null, null, null, null, "A", null, "M", null, null],
+    [null, "B", null, null, null, null, null, null, "N", null, "I", null, null],
+    ["F", "O", "S", "S", "I", "L", "F", "U", "E", "L", "S", null, null],
+    [null, "N", null, null, null, null, null, null, null, null, "S", null, null],
+    [null, null, null, null, null, null, null, null, "C", null, "I", null, null],
+    [null, null, null, null, null, null, null, null, "F", null, "O", null, null],
+    [null, null, null, null, null, "V", "O", "L", "C", "A", "N", "O", null],
+    [null, null, null, null, null, null, null, null, null, null, "S", null, null],
+  ];
+  
+  
+
+  const table = document.getElementById("crossword");
+
+  // Dynamically generate the crossword grid
+  for (let i = 0; i < answers.length; i++) {
+    const row = document.createElement("tr");
+    for (let j = 0; j < answers[i].length; j++) {
+      const cell = document.createElement("td");
+      const expected = answers[i][j];
+
+      if (expected !== null) {
+        const input = document.createElement("input");
+        input.maxLength = 1;
+        input.classList.add("user-input");
+        cell.appendChild(input);
+      } else {
+        cell.classList.add("empty");
+      }
+
+      row.appendChild(cell);
+    }
+    table.appendChild(row);
+  }
+
+  // Auto-uppercase user input and auto-focus the next input
+  document.querySelectorAll('#crossword input').forEach((input, idx, inputs) => {
+    input.addEventListener('input', () => {
+      input.value = input.value.toUpperCase(); // Make input uppercase
+        
+    }); 
+  });
+
+  // Function to check the user's answers
+  function checkAnswers() {
+    const rows = table.rows;
+
+    // Iterate through each cell and check the user's input
+    for (let i = 0; i < answers.length; i++) {
+      for (let j = 0; j < answers[i].length; j++) {
+        const expected = answers[i][j];
+        const cell = rows[i].cells[j];
+        const input = cell.querySelector("input");
+
+        if (!input || expected === null) continue;
+        const userAnswer = input.value.trim().toUpperCase();
+
+        // Check if the user's answer matches the expected answer
+        if (userAnswer === expected.toUpperCase()) {
+          input.classList.add("correct");
+          input.classList.remove("incorrect");
+        } else {
+          input.classList.add("incorrect");
+          input.classList.remove("correct");
+        }
+      }
+    }
+  }
+
+  // Clear all inputs
+  function clearAnswers() {
+    document.querySelectorAll('#crossword input').forEach(input => {
+      input.value = '';
+      input.classList.remove("correct", "incorrect");
+    });
+  }
+</script>
+
+</body>
+</html>
